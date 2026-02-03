@@ -4,7 +4,8 @@ import streamlit as st
 import pandas as pd
 from datetime import date, datetime, timedelta
 from pathlib import Path, PureWindowsPath
-#from requests_oauthlib import OAuth2Session
+from requests_oauthlib import OAuth2Session
+import time
 import requests
 
 # --- LINK DIRETO DA IMAGEM NO GITHUB ---
@@ -49,9 +50,9 @@ if str(modulos_dir) not in sys.path:
 # Agora importa o módulo normalmente
 from Modulos import ConectionSupaBase
 
-# ===============================
-# Configuração da conexão Supabase
-# ===============================
+# ---------------------------------------------------
+# IMPORTA CONEXÃO SUPABASE
+# ---------------------------------------------------
 sys.path.append(
     PureWindowsPath(
         r"\\tableau\Central_de_Performance\BI\Cloud\Scripts\Modulos"
@@ -59,11 +60,7 @@ sys.path.append(
 )
 import ConectionSupaBase
 
-@st.cache_resource
-def get_supabase_client():
-    return ConectionSupaBase.conexao()
-
-supabase = get_supabase_client()
+supabase = ConectionSupaBase.conexao()
 
 # ===============================
 # Configuração da página
