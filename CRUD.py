@@ -89,23 +89,23 @@ def criar_equipe(nome_equipe):
     Returns:
         bool: True se a equipe foi criada com sucesso, False se já existe ou ocorreu um erro.
     """
-        try:
-        # Busca todas as equipes existentes
-        df_equipes = run_query(TABELA_EQUIPES)
+    try:
+    # Busca todas as equipes existentes
+    df_equipes = run_query(TABELA_EQUIPES)
 
         # Verifica se a equipe já existe
-        if not df_equipes.empty and "equipe" in df_equipes.columns:
-            if nome_equipe in df_equipes["equipe"].values:
-                st.warning("Essa equipe já existe.")
-                return False
+    if not df_equipes.empty and "equipe" in df_equipes.columns:
+        if nome_equipe in df_equipes["equipe"].values:
+            st.warning("Essa equipe já existe.")
+            return False
 
-        # Insere a nova equipe
-        insert_data(TABELA_EQUIPES, {"equipe": nome_equipe})
-        st.success("Equipe cadastrada com sucesso!")
-        return True
-    except Exception as e:
-        st.error(f"Erro ao criar equipe: {e}")
-        return False
+    # Insere a nova equipe
+    insert_data(TABELA_EQUIPES, {"equipe": nome_equipe})
+    st.success("Equipe cadastrada com sucesso!")
+    return True
+except Exception as e:
+    st.error(f"Erro ao criar equipe: {e}")
+    return False
 
 # ===============================
 # Funções de tempo
