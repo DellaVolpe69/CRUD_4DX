@@ -7,6 +7,24 @@ from pathlib import Path, PureWindowsPath
 import time
 import requests
 
+modulos_dir = Path(__file__).parent / "Modulos"
+
+if not modulos_dir.exists():
+    subprocess.run(
+        ["git", "clone", "https://github.com/DellaVolpe69/Modulos.git", str(modulos_dir)],
+        check=True,
+    )
+
+if str(modulos_dir) not in sys.path:
+    sys.path.insert(0, str(modulos_dir))
+
+from Modulos import ConectionSupaBase
+from Modulos import AzureLogin
+
+
+
+
+
 # --- LINK DIRETO DA IMAGEM NO GITHUB ---
 url_imagem = (
     "https://raw.githubusercontent.com/DellaVolpe69/Images/main/AppBackground02.png"
@@ -25,9 +43,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# Agora importa o módulo normalmente
-from Modulos import ConectionSupaBase
 
 # ---------------------------------------------------
 # IMPORTA CONEXÃO SUPABASE
