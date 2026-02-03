@@ -7,4 +7,5 @@ pyarrow
 openpyxl
 minio
 office365-rest-python-client
-git+https://github.com/DellaVolpe69/Modulos.git@main
+
+
