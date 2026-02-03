@@ -32,12 +32,6 @@ from Modulos import ConectionSupaBase
 # ---------------------------------------------------
 # IMPORTA CONEXÃO SUPABASE
 # ---------------------------------------------------
-sys.path.append(
-    PureWindowsPath(
-        r"\\tableau\Central_de_Performance\BI\Cloud\Scripts\Modulos"
-    ).as_posix()
-)
-import ConectionSupaBase
 
 supabase = ConectionSupaBase.conexao()
 
