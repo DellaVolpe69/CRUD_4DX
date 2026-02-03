@@ -1,23 +1,19 @@
 import streamlit as st
 import pandas as pd
 import supabase
-import os
 import sys
-from datetime import date, datetime, timedelta
-from pathlib import Path, PureWindowsPath
-import itertools
 import subprocess
-import json
-#from requests_oauthlib import OAuth2Session
-from urllib.parse import urlsplit, quote
-
-
+from pathlib import Path, PureWindowsPath
+from datetime import datetime, timedelta
 
 # ===============================
 # Configuração da página
 # ===============================
 st.set_page_config(page_title="4DX - Gestão de Metas", layout="wide")
 
+# ===============================
+# Configuração Supabase
+# ===============================
 modulos_dir = Path(__file__).parent / "Modulos"
 if not modulos_dir.exists():
     subprocess.run([
@@ -27,32 +23,11 @@ if not modulos_dir.exists():
     ], check=True)
 if str(modulos_dir) not in sys.path:
     sys.path.insert(0, str(modulos_dir))
+
 from Modulos import ConectionSupaBase
-from Modulos.Minio.examples.MinIO import read_file
 
 # Inicializa conexão Supabase
 supabase = ConectionSupaBase.conexao()
-
-
-
-# --- LINK DIRETO DA IMAGEM NO GITHUB ---
-url_imagem = (
-    "https://raw.githubusercontent.com/DellaVolpe69/Images/main/AppBackground02.png"
-)
-url_logo = "https://raw.githubusercontent.com/DellaVolpe69/Images/main/DellaVolpeLogoBranco.png"
-fox_image = "https://raw.githubusercontent.com/DellaVolpe69/Images/main/Foxy4.png"
-
-st.markdown(
-    f"""
-    <style>
-    /* Remove fundo padrão dos elementos de cabeçalho que às vezes ‘brigam’ com o BG */
-    header, [data-testid="stHeader"] {{
-        background: transparent;
-    }}
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
 
 # ===============================
 # Constantes de Tabelas
@@ -112,6 +87,25 @@ def inicio_semana(d=None):
 
 def semana_anterior():
     return inicio_semana() - timedelta(days=7)
+
+# --- LINK DIRETO DA IMAGEM NO GITHUB ---
+url_imagem = (
+    "https://raw.githubusercontent.com/DellaVolpe69/Images/main/AppBackground02.png"
+)
+url_logo = "https://raw.githubusercontent.com/DellaVolpe69/Images/main/DellaVolpeLogoBranco.png"
+fox_image = "https://raw.githubusercontent.com/DellaVolpe69/Images/main/Foxy4.png"
+
+st.markdown(
+    f"""
+    <style>
+    /* Remove fundo padrão dos elementos de cabeçalho que às vezes ‘brigam’ com o BG */
+    header, [data-testid="stHeader"] {{
+        background: transparent;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 # ===============================
 # Session State
