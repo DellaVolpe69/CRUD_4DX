@@ -222,13 +222,13 @@ with tabs[0]:
         st.info("Cadastre uma equipe primeiro.")
     else:
        with st.form("form_user"):
-    nome = st.text_input("Nome", key="user_nome")
-    email = st.text_input("Email", key="user_email")
-    equipe = st.selectbox("Equipe", df_eq["equipe"], key="user_equipe")
-    if st.form_submit_button("Salvar") and nome and email:
-        if criar_usuario(nome, email, equipe):
-            st.session_state.usuario_ok = True
-            st.rerun()
+        nome = st.text_input("Nome", key="user_nome")
+        email = st.text_input("Email", key="user_email")
+        equipe = st.selectbox("Equipe", df_eq["equipe"], key="user_equipe")
+        if st.form_submit_button("Salvar") and nome and email:
+            if criar_usuario(nome, email, equipe):
+                st.session_state.usuario_ok = True
+                st.rerun()
 
 
 # ======================================================
