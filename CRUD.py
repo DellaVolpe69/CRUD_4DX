@@ -143,6 +143,41 @@ def criar_usuario(nome, email, equipe):
         return False
 
 
+def criar_meta_crucial(equipe, responsavel, meta_crucial, indicador, meta_final, prazo):
+    """
+    Cria ou atualiza uma meta crucial no Supabase.
+
+    Args:
+        equipe (str): Equipe responsável pela meta.
+        responsavel (str): Nome do responsável pela meta.
+        meta_crucial (str): Descrição da meta crucial.
+        indicador (str): Indicador da meta.
+        meta_final (str): Meta final (valor ou objetivo).
+        prazo (str): Prazo para conclusão da meta.
+
+    Returns:
+        bool: True se a meta foi criada/atualizada com sucesso, False se ocorreu um erro.
+    """
+    try:
+        # Deleta a meta anterior do responsável (se existir)
+        delete_data(TABELA_METAS, "responsavel", responsavel)
+
+        # Insere a nova meta
+        insert_data(TABELA_METAS, {
+            "equipe": equipe,
+            "responsavel": responsavel,
+            "meta_crucial": meta_crucial,
+            "indicador": indicador,
+            "meta_final": meta_final,
+            "prazo": prazo
+        })
+        st.success("Meta salva com sucesso!")
+        return True
+    except Exception as e:
+        st.error(f"Erro ao salvar meta: {e}")
+        return False
+
+
 
 # ===============================
 # Funções de tempo
@@ -266,7 +301,7 @@ with tabs[1]:
                 existente = df_m[df_m["responsavel"] == responsavel]
 
             with st.form("form_meta"):
-                # Se ja existir, preenche.
+                # Se ja existir, preenche. (CORREÇÃO: Removido .iloc[0] duplicado)
                 default_meta = existente.iloc[0]["meta_crucial"] if not existente.empty else ""
                 default_ind = existente.iloc[0]["indicador"] if not existente.empty else ""
                 default_final = existente.iloc[0]["meta_final"] if not existente.empty else ""
@@ -277,20 +312,11 @@ with tabs[1]:
                 meta_final = st.text_input("Meta Final", default_final, key="meta_final")
                 prazo = st.text_input("Prazo", default_prazo, key="meta_prazo")
 
-                if st.form_submit_button("Salvar"):
-                    # Logica: deletar anterior do responsável e criar nova (garante 1 por resp)
-                    delete_data(TABELA_METAS, "responsavel", responsavel)
-                    
-                    insert_data(TABELA_METAS, {
-                        "equipe": equipe,
-                        "responsavel": responsavel,
-                        "meta_crucial": meta,
-                        "indicador": indicador,
-                        "meta_final": meta_final,
-                        "prazo": prazo
-                    })
-                    st.session_state.meta_ok = True
-                    st.rerun()
+    if st.form_submit_button("Salvar"):
+        if criar_meta_crucial(equipe, responsavel, meta, indicador, meta_final, prazo):
+            st.session_state.meta_ok = True
+            st.rerun()
+
 
 # ======================================================
 # TAB 2 – MEDIDA DE DIREÇÃO
