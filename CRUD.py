@@ -4,8 +4,7 @@ import streamlit as st
 import pandas as pd
 from datetime import date, datetime, timedelta
 from pathlib import Path, PureWindowsPath
-from requests_oauthlib import OAuth2Session
-
+#from requests_oauthlib import OAuth2Session
 import requests
 
 # --- LINK DIRETO DA IMAGEM NO GITHUB ---
