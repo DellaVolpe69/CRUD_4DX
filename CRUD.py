@@ -7,7 +7,7 @@ from pathlib import Path, PureWindowsPath
 import itertools
 import subprocess
 import json
-from requests_oauthlib import OAuth2Session
+#from requests_oauthlib import OAuth2Session
 from urllib.parse import urlsplit, quote
 
 
