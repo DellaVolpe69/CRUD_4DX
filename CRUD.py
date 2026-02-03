@@ -312,10 +312,10 @@ with tabs[1]:
                 meta_final = st.text_input("Meta Final", default_final, key="meta_final")
                 prazo = st.text_input("Prazo", default_prazo, key="meta_prazo")
 
-    if st.form_submit_button("Salvar"):
-        if criar_meta_crucial(equipe, responsavel, meta, indicador, meta_final, prazo):
-            st.session_state.meta_ok = True
-            st.rerun()
+                if st.form_submit_button("Salvar"):
+                    if criar_meta_crucial(equipe, responsavel, meta, indicador, meta_final, prazo):
+                        st.session_state.meta_ok = True
+                        st.rerun()
 
 
 # ======================================================
