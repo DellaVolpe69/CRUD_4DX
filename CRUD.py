@@ -78,6 +78,35 @@ def delete_data(table_name, match_col, match_val):
         st.error(f"Erro ao deletar de {table_name}: {e}")
         return None
 
+
+def criar_equipe(nome_equipe):
+      """
+    Cria uma nova equipe no Supabase.
+
+    Args:
+        nome_equipe (str): Nome da equipe a ser criada.
+
+    Returns:
+        bool: True se a equipe foi criada com sucesso, False se já existe ou ocorreu um erro.
+    """
+    try:
+        # Busca todas as equipes existentes
+        df_equipes = run_query(TABELA_EQUIPES)
+
+        # Verifica se a equipe já existe
+        if not df_equipes.empty and "equipe" in df_equipes.columns:
+            if nome_equipe in df_equipes["equipe"].values:
+                st.warning("Essa equipe já existe.")
+                return False
+
+        # Insere a nova equipe
+        insert_data(TABELA_EQUIPES, {"equipe": nome_equipe})
+        st.success("Equipe cadastrada com sucesso!")
+        return True
+    except Exception as e:
+        st.error(f"Erro ao criar equipe: {e}")
+        return False
+
 # ===============================
 # Funções de tempo
 # ===============================
@@ -135,23 +164,13 @@ tabs = st.tabs([
 # TAB 0 – EQUIPES & USUÁRIOS
 # ======================================================
 with tabs[0]:
-    st.subheader("Cadastro de Equipes")
+   st.subheader("Cadastro de Equipes")
 
     with st.form("form_equipe"):
         equipe = st.text_input("Equipe", key="nova_equipe")
         if st.form_submit_button("Salvar") and equipe:
-            df = run_query(TABELA_EQUIPES)
-            exists = False
-            if not df.empty and "equipe" in df.columns:
-                 if equipe in df["equipe"].values:
-                     exists = True
-            
-            if not exists:
-                insert_data(TABELA_EQUIPES, {"equipe": equipe})
-                st.success("Equipe cadastrada com sucesso")
-                st.rerun()
-            else:
-                st.warning("Equipe já existe.")
+            criar_equipe(equipe)
+            st.rerun()  # Atualiza a página para refletir as mudanças
 
     st.divider()
     st.subheader("Cadastro de Usuários")
