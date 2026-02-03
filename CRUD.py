@@ -8,20 +8,16 @@ import time
 import requests
 
 modulos_dir = Path(__file__).parent / "Modulos"
-
 if not modulos_dir.exists():
-    subprocess.run(
-        ["git", "clone", "https://github.com/DellaVolpe69/Modulos.git", str(modulos_dir)],
-        check=True,
-    )
-
+    subprocess.run([
+        "git", "clone",
+        "https://github.com/DellaVolpe69/Modulos.git",
+        str(modulos_dir)
+    ], check=True)
 if str(modulos_dir) not in sys.path:
     sys.path.insert(0, str(modulos_dir))
-
-import ConectionSupaBase
-supabase = ConectionSupaBase.conexao()
-
-import AzureLogin
+from Modulos import ConectionSupaBase
+from Modulos.Minio.examples.MinIO import read_file
 
 
 
