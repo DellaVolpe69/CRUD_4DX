@@ -24,6 +24,7 @@ if not modulos_dir.exists():
 if str(modulos_dir) not in sys.path:
     sys.path.insert(0, str(modulos_dir))
 
+from Modulos import AzureLogin
 from Modulos import ConectionSupaBase
 
 # Inicializa conexão Supabase
