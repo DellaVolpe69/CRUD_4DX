@@ -1,11 +1,11 @@
 streamlit
 pandas
 supabase
-python-dotenv
-requests
+minio==7.1.2
 pyarrow
-openpyxl
-minio
+python-dotenv
+requests-oauthlib
 office365-rest-python-client
-
+openpyxl
+git+https://github.com/DellaVolpe69/Modulos.git@main
 
