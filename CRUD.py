@@ -207,6 +207,69 @@ def criar_medida_direcao(responsavel, meta_crucial, medidas, frequencia):
         return False
 
 
+def atualizar_medida_direcao(row_id, medida, frequencia, responsavel, meta_crucial, medida_antiga=None):
+    """
+    Atualiza uma medida de direção no Supabase.
+
+    Args:
+        row_id (int): ID da medida no Supabase (se existir).
+        medida (str): Nova descrição da medida.
+        frequencia (str): Nova frequência da medida.
+        responsavel (str): Responsável pela medida.
+        meta_crucial (str): Meta associada à medida.
+        medida_antiga (str): Medida antiga (usada como fallback se não houver ID).
+
+    Returns:
+        bool: True se a medida foi atualizada com sucesso, False se ocorreu um erro.
+    """
+    try:
+        if row_id:
+            # Atualiza usando o ID
+            update_data(TABELA_MEDIDAS, {"medida_direcao": medida, "frequencia": frequencia}, "id", row_id)
+        else:
+            # Atualiza usando a medida antiga como referência
+            supabase.table(TABELA_MEDIDAS) \
+                .update({"medida_direcao": medida, "frequencia": frequencia}) \
+                .eq("responsavel", responsavel) \
+                .eq("meta_crucial", meta_crucial) \
+                .eq("medida_direcao", medida_antiga) \
+                .execute()
+        st.success("Medida atualizada com sucesso!")
+        return True
+    except Exception as e:
+        st.error(f"Erro ao atualizar medida: {e}")
+        return False
+
+
+def registrar_semana(responsavel, meta_crucial, semana_ref, concluido, planejado):
+    """
+    Registra uma semana no Supabase.
+
+    Args:
+        responsavel (str): Responsável pela meta.
+        meta_crucial (str): Meta associada.
+        semana_ref (str): Data de referência da semana.
+        concluido (str): Status de conclusão (SIM/NAO).
+        planejado (str): Planejamento para a próxima semana.
+
+    Returns:
+        bool: True se a semana foi registrada com sucesso, False se ocorreu um erro.
+    """
+    try:
+        insert_data(TABELA_SEMANAS, {
+            "responsavel": responsavel,
+            "meta_crucial": meta_crucial,
+            "semana_ref": semana_ref,
+            "concluido": concluido,
+            "planejado": planejado
+        })
+        st.success("Semana registrada com sucesso!")
+        return True
+    except Exception as e:
+        st.error(f"Erro ao registrar semana: {e}")
+        return False
+
+
 
 
 # ===============================
@@ -410,19 +473,9 @@ with tabs[2]:
                         key=f"freq_med_{idx}"
                     )
                     if st.form_submit_button("Salvar"):
-                        if row_id:
-                            update_data(TABELA_MEDIDAS, {"medida_direcao": txt, "frequencia": freq}, "id", row_id)
-                        else:
-                            # Fallback update
-                            (supabase.table(TABELA_MEDIDAS)
-                                .update({"medida_direcao": txt, "frequencia": freq})
-                                .eq("responsavel", resp)
-                                .eq("meta_crucial", meta)
-                                .eq("medida_direcao", m["medida_direcao"]) # filtro pelo antigo
-                                .execute())
-                        
-                        st.session_state.medida_edit = None
-                        st.rerun()
+                        if atualizar_medida_direcao(row_id, txt, freq, resp, meta, m["medida_direcao"]):
+                            st.session_state.medida_edit = None
+                            st.rerun()  
 
         st.divider()
         with st.form("form_nova_med"):
@@ -480,14 +533,8 @@ with tabs[3]:
                             key=f"concl_{idx}"
                         )
                         if st.button("Confirmar semana passada", key=f"conf_{idx}"):
-                            insert_data(TABELA_SEMANAS, {
-                                "responsavel": m["responsavel"],
-                                "meta_crucial": m["meta_crucial"],
-                                "semana_ref": str(sem_pass),
-                                "concluido": status,
-                                "planejado": ""
-                            })
-                            st.rerun()
+                            if registrar_semana(m["responsavel"], m["meta_crucial"], str(sem_pass), status, ""):
+                                st.rerun()
                     else:
                         st.success(f"Semana passada: {reg.iloc[0]['concluido']}")
 
@@ -496,11 +543,5 @@ with tabs[3]:
                         key=f"plan_{idx}"
                     )
                     if st.button("Salvar compromisso", key=f"save_{idx}"):
-                        insert_data(TABELA_SEMANAS, {
-                             "responsavel": m["responsavel"],
-                             "meta_crucial": m["meta_crucial"],
-                             "semana_ref": str(sem_atual),
-                             "concluido": "",
-                             "planejado": planejamento
-                        })
-                        st.rerun()
+                        if registrar_semana(m["responsavel"], m["meta_crucial"], str(sem_atual), "", planejamento):
+                            st.rerun()
