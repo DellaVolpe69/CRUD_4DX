@@ -89,7 +89,7 @@ def criar_equipe(nome_equipe):
     Returns:
         bool: True se a equipe foi criada com sucesso, False se já existe ou ocorreu um erro.
     """
-    try:
+        try:
         # Busca todas as equipes existentes
         df_equipes = run_query(TABELA_EQUIPES)
 
