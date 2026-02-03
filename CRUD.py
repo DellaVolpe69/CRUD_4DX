@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import supabase
 import os
 import sys
 from datetime import date, datetime, timedelta
