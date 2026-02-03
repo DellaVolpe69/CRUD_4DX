@@ -12,6 +12,12 @@ import json
 from urllib.parse import urlsplit, quote
 
 
+
+# ===============================
+# Configuração da página
+# ===============================
+st.set_page_config(page_title="4DX - Gestão de Metas", layout="wide")
+
 modulos_dir = Path(__file__).parent / "Modulos"
 if not modulos_dir.exists():
     subprocess.run([
@@ -24,8 +30,8 @@ if str(modulos_dir) not in sys.path:
 from Modulos import ConectionSupaBase
 from Modulos.Minio.examples.MinIO import read_file
 
-
-
+# Inicializa conexão Supabase
+supabase = ConectionSupaBase.conexao()
 
 
 
@@ -47,17 +53,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# ---------------------------------------------------
-# IMPORTA CONEXÃO SUPABASE
-# ---------------------------------------------------
-
-
-
-# ===============================
-# Configuração da página
-# ===============================
-st.set_page_config(page_title="4DX - Gestão de Metas", layout="wide")
 
 # ===============================
 # Constantes de Tabelas
