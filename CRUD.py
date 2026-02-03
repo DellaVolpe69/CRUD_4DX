@@ -1,11 +1,15 @@
-import sys
-import subprocess
 import streamlit as st
 import pandas as pd
-from datetime import date, datetime, timedelta
+import os
+import sys
+from datetime import date, datetime
 from pathlib import Path, PureWindowsPath
-import time
-import requests
+import itertools
+import subprocess
+import json
+from requests_oauthlib import OAuth2Session
+from urllib.parse import urlsplit, quote
+
 
 modulos_dir = Path(__file__).parent / "Modulos"
 if not modulos_dir.exists():
