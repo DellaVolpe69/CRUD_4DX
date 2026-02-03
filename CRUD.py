@@ -166,13 +166,13 @@ tabs = st.tabs([
 # TAB 0 – EQUIPES & USUÁRIOS
 # ======================================================
 with tabs[0]:
-   st.subheader("Cadastro de Equipes")
+    st.subheader("Cadastro de Equipes")
 
     with st.form("form_equipe"):
         equipe = st.text_input("Equipe", key="nova_equipe")
         if st.form_submit_button("Salvar") and equipe:
             criar_equipe(equipe)
-            st.rerun()  # Atualiza a página para refletir as mudanças
+            st.rerun()
 
     st.divider()
     st.subheader("Cadastro de Usuários")
@@ -190,13 +190,15 @@ with tabs[0]:
             nome = st.text_input("Nome", key="user_nome")
             email = st.text_input("Email", key="user_email")
             equipe = st.selectbox("Equipe", df_eq["equipe"], key="user_equipe")
+
             if st.form_submit_button("Salvar") and nome and email:
                 df = run_query(TABELA_USUARIOS)
                 exists = False
+
                 if not df.empty and "email" in df.columns:
                     if email in df["email"].values:
                         exists = True
-                
+
                 if not exists:
                     insert_data(TABELA_USUARIOS, {
                         "nome": nome,
@@ -207,6 +209,7 @@ with tabs[0]:
                     st.rerun()
                 else:
                     st.warning("Email já cadastrado.")
+
 
 # ======================================================
 # TAB 1 – META CRUCIAL
