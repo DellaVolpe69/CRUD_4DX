@@ -178,6 +178,36 @@ def criar_meta_crucial(equipe, responsavel, meta_crucial, indicador, meta_final,
         return False
 
 
+def criar_medida_direcao(responsavel, meta_crucial, medidas, frequencia):
+    """
+    Cria novas medidas de direção no Supabase.
+
+    Args:
+        responsavel (str): Nome do responsável pela meta.
+        meta_crucial (str): Meta crucial associada.
+        medidas (list): Lista de medidas de direção (uma string por medida).
+        frequencia (str): Frequência das medidas (Diária, Semanal, Mensal, Projeto).
+
+    Returns:
+        bool: True se as medidas foram criadas com sucesso, False se ocorreu um erro.
+    """
+    try:
+        for medida in medidas:
+            if medida.strip():  # Ignora linhas vazias
+                insert_data(TABELA_MEDIDAS, {
+                    "responsavel": responsavel,
+                    "meta_crucial": meta_crucial,
+                    "medida_direcao": medida.strip(),
+                    "frequencia": frequencia
+                })
+        st.success("Medidas salvas com sucesso!")
+        return True
+    except Exception as e:
+        st.error(f"Erro ao salvar medidas: {e}")
+        return False
+
+
+
 
 # ===============================
 # Funções de tempo
@@ -288,7 +318,7 @@ with tabs[1]:
         users_da_equipe = df_u[df_u["equipe"] == equipe] if "equipe" in df_u.columns else pd.DataFrame()
         
         if users_da_equipe.empty:
-            st.info("Sem usuários neta equipe.")
+            st.info("Sem usuários nesta equipe.")
         else:
             responsavel = st.selectbox(
                 "Responsável",
@@ -399,15 +429,10 @@ with tabs[2]:
             novas = st.text_area("Nova(s) medida(s) – uma por linha", key="nova_med_txt")
             freq = st.selectbox("Frequência", ["Diária", "Semanal", "Mensal", "Projeto"], key="nova_med_freq")
             if st.form_submit_button("Adicionar"):
-                for t in novas.split("\n"):
-                    if t.strip():
-                        insert_data(TABELA_MEDIDAS, {
-                            "responsavel": resp,
-                            "meta_crucial": meta,
-                            "medida_direcao": t.strip(),
-                            "frequencia": freq
-                        })
-                st.rerun()
+                medidas = novas.split("\n")
+                if criar_medida_direcao(resp, meta, medidas, freq):
+                    st.rerun()
+
 
 # ======================================================
 # TAB 3 – VISÃO GERAL + SEMANAS
