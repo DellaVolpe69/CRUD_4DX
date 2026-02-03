@@ -18,8 +18,11 @@ if not modulos_dir.exists():
 if str(modulos_dir) not in sys.path:
     sys.path.insert(0, str(modulos_dir))
 
-from Modulos import ConectionSupaBase
-from Modulos import AzureLogin
+import ConectionSupaBase
+supabase = ConectionSupaBase.conexao()
+
+import AzureLogin
+
 
 
 
@@ -48,7 +51,7 @@ st.markdown(
 # IMPORTA CONEXÃO SUPABASE
 # ---------------------------------------------------
 
-supabase = ConectionSupaBase.conexao()
+
 
 # ===============================
 # Configuração da página
