@@ -108,6 +108,41 @@ def criar_equipe(nome_equipe):
         st.error(f"Erro ao criar equipe: {e}")
         return False
 
+def criar_usuario(nome, email, equipe):
+    """
+    Cria um novo usuário no Supabase.
+
+    Args:
+        nome (str): Nome do usuário.
+        email (str): Email do usuário.
+        equipe (str): Equipe à qual o usuário pertence.
+
+    Returns:
+        bool: True se o usuário foi criado com sucesso, False se já existe ou ocorreu um erro.
+    """
+    try:
+        # Busca todos os usuários existentes
+        df_usuarios = run_query(TABELA_USUARIOS)
+
+        # Verifica se o email já existe
+        if not df_usuarios.empty and "email" in df_usuarios.columns:
+            if email in df_usuarios["email"].values:
+                st.warning("Esse email já está cadastrado.")
+                return False
+
+        # Insere o novo usuário
+        insert_data(TABELA_USUARIOS, {
+            "nome": nome,
+            "email": email,
+            "equipe": equipe
+        })
+        st.success("Usuário cadastrado com sucesso!")
+        return True
+    except Exception as e:
+        st.error(f"Erro ao criar usuário: {e}")
+        return False
+
+
 
 # ===============================
 # Funções de tempo
@@ -186,29 +221,14 @@ with tabs[0]:
     if df_eq.empty:
         st.info("Cadastre uma equipe primeiro.")
     else:
-        with st.form("form_user"):
-            nome = st.text_input("Nome", key="user_nome")
-            email = st.text_input("Email", key="user_email")
-            equipe = st.selectbox("Equipe", df_eq["equipe"], key="user_equipe")
-
-            if st.form_submit_button("Salvar") and nome and email:
-                df = run_query(TABELA_USUARIOS)
-                exists = False
-
-                if not df.empty and "email" in df.columns:
-                    if email in df["email"].values:
-                        exists = True
-
-                if not exists:
-                    insert_data(TABELA_USUARIOS, {
-                        "nome": nome,
-                        "email": email,
-                        "equipe": equipe
-                    })
-                    st.session_state.usuario_ok = True
-                    st.rerun()
-                else:
-                    st.warning("Email já cadastrado.")
+       with st.form("form_user"):
+    nome = st.text_input("Nome", key="user_nome")
+    email = st.text_input("Email", key="user_email")
+    equipe = st.selectbox("Equipe", df_eq["equipe"], key="user_equipe")
+    if st.form_submit_button("Salvar") and nome and email:
+        if criar_usuario(nome, email, equipe):
+            st.session_state.usuario_ok = True
+            st.rerun()
 
 
 # ======================================================
